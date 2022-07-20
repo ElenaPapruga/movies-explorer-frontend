@@ -18,7 +18,7 @@ api.epapruga.nomoredomains.sbs
 - CSS (Flexbox, Grid Layout, Positioning, Adaptive, UI, Media Queries)
 - Фйловая структура Nested БЭМ
 - Методология БЭМ
-- JavaScript (Стиль CamelCase,Объектно-ориентированное программирование (ОПП)
+- JavaScript (Стиль CamelCase,Объектно-ориентированное программирование (ОПП))
 - Промисы (Promise)
 - Асинхронность и оптимизация
 - Rest API
@@ -71,7 +71,7 @@ CSS
 * Используется главный шрифт Inter, а также вспомогательные: Arial, sans-serif. Размеры, начертания и цвет шрифта, как в макете.
 
 ## Макет сайта в Figma
-[Ссылка на макет1 в Figma (для Диплома)](https://www.figma.com/file/cASM20ikAsPlTi2doec68Q/Diploma)
+[Ссылка на макет в Figma (для Диплома)](https://www.figma.com/file/cASM20ikAsPlTi2doec68Q/Diploma)
 
 ## Чек-лист от Яндекс.Практикума
 * [Чек-лист диплома](https://code.s3.yandex.net/web-developer/static/new-program/web-diploma-criteria-2.0/index.html) 
