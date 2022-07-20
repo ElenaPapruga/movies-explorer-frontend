@@ -3,6 +3,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Navigation.css";
+import PropTypes from 'prop-types';
 
 function Navigation(props) {
   return (
@@ -20,6 +21,11 @@ function Navigation(props) {
       </nav>
     </section>
   );
+}
+
+Navigation.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  isOpened: PropTypes.func.isRequired,
 }
 
 export default Navigation;
