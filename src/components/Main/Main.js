@@ -8,6 +8,7 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Techs from "../Techs/Techs";
 import AboutMe from "../AboutMe/AboutMe";
+import PropTypes from 'prop-types';
 
 function Main({ loggedIn }) {
 
@@ -24,6 +25,10 @@ function Main({ loggedIn }) {
       <Footer />
     </div>
   );
+}
+
+Main.propTypes = {
+  loggedIn: PropTypes.bool.isRequired,
 }
 
 export default Main;
