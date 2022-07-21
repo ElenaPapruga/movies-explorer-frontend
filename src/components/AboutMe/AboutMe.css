@@ -31,7 +31,7 @@
 
 .about-me__box {
   display: flex;
-  width: 600px;
+  max-width: 600px;
   flex-direction: column;
 }
 
@@ -129,6 +129,9 @@
     margin: 0 auto;
   }
 
+  /* .about-me__box {
+    max-width: 668px;
+  } */
   .about-me__title {
     max-width: 668px;
   }
@@ -193,7 +196,7 @@
   .about-me__wrapper {
     display: flex;
     flex-direction: column-reverse;
-    justify-content: flex-start; 
+    justify-content: flex-start;
     padding-top: 60px;
     padding-bottom: 40px;
   }

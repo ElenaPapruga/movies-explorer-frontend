@@ -23,10 +23,9 @@
 
 .promo__wrapper {
   display: flex;
-  flex-direction: row;
-  text-align: center;
-  align-items: center;
-  margin: 161px 446px 30px;
+  max-width: 1200px;
+  margin: 161px auto 30px;
+  padding: 0;
 }
 
 .promo__link {
@@ -52,19 +51,12 @@
   margin-right: 0;
 }
 
-@media screen and (max-width: 1279px) {
-  .promo {
-    max-width: 1200px;
-    max-height: 493px;
-    margin: 20px 40px 0;
-  }
-}
-
 @media screen and (max-width: 1023px) {
   .promo {
     max-width: 728px;
     max-height: 834px;
-    margin: 20px 20px 0;
+    padding: 20px 20px 0;
+    margin: 0 auto;
   }
 
   .promo__title {

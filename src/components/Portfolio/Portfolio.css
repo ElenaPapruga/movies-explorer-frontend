@@ -108,11 +108,13 @@
   }
 
   .portfolio__links {
+    display: flex;
+    justify-content: center;
     max-width: 292px;
   }
 
   .portfolio_card {
-    max-width: 292px;
+    max-width: 288px;
   }
 
   .portfolio__link-button {

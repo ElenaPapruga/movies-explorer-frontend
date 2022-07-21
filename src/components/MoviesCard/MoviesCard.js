@@ -3,6 +3,7 @@ import React from 'react';
 import preview from "../../images/film1.svg";
 import { Route, Switch } from "react-router-dom";
 
+
 function MoviesCard() {
   return (
     <div className="movies-card">

@@ -14,8 +14,9 @@ function SearchForm() {
           <div className="search__border"></div>
           <div className="search__filter">
             <input type="checkbox" className="search__checkbox" name="filter__film" />
-            <p className="filter__text">Короткоментражки</p>
+            <p className="search__text">Короткоментражки</p>
           </div>
+
         </form>
       </div>
     </section>
