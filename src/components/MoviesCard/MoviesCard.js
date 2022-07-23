@@ -12,6 +12,7 @@ function MoviesCard() {
           <div className="movies-card__name">33 слова о дизайне</div>
           <p className="movies-card__time">1ч 47м</p>
         </div>
+        <div>
         <Switch>
           <Route path="/movies">
             <button
@@ -26,6 +27,7 @@ function MoviesCard() {
             ></button>
           </Route>
         </Switch>
+        </div>
       </div>
       <img className="movies-card__images" alt="Прекрасный фильм" src={preview} />
     </div>
