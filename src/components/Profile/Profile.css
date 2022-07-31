@@ -106,6 +106,10 @@
   opacity: 0.8;
 }
 
+.profile__button_invalid {
+  color: #A0A0A0;
+}
+
 .profile__button_logout {
   color: #ee3465;
 }
