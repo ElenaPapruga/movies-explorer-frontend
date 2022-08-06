@@ -1,55 +1,55 @@
 // SavedMovies — компонент страницы с сохранёнными карточками фильмов
 
+import { useEffect } from 'react';
 import "./SavedMovies.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import useLocalStorage from '../../services/useLocalStorage';
-import { useEffect, useState } from 'react';
 
 function SavedMovies(props) {
-  const [checked, setChecked] = useLocalStorage('save_checked', false); // сеттер для фильтра для коротких фильмов
+  const [checked, setChecked] = useLocalStorage('save_checked', false); // сеттер для фильтрации короткого фильма
 
-  const [shortMovies, setShortMovies] = useLocalStorage('save_short_movies', []);
+  const [shortMovies, setShortMovies] = useLocalStorage('save_short_movies', []); // фильрация карточек из сохраненного стейта
 
-  useEffect(() => {
+  useEffect(() => { // управление фильтрацией фильмов при тумблере
     return checked ? setShortMovies(props.showShortMovies(props.movies)) : setShortMovies(props.movies);
-  }, [checked, props, setShortMovies]);
+  }, [checked, props]);
 
   return (
     <>
       <Header loggedIn={props.loggedIn} />
       <main>
         <SearchForm
-          checked={checked}
-          setChecked={setChecked}
           value={props.value}
           setValue={props.setValue}
-          findByNameFilm={props.findByNameFilm}
-          submitFindByNameFilm={props.submitFindByNameFilm}
+          checked={checked}
+          setChecked={setChecked}
+          submitSearchNameFilm={props.submitSearchNameFilm}
           setShowError={props.setShowError}
-        />
 
-        <div>
-          {props.showError && props.movies.length === 0 ? (
-            <h1 className="saved-movies-err">{props.showError}</h1>
-          ) : (
-            <MoviesCardList
-              handleMovieLike={props.handleMovieLike}
-              movies={shortMovies}
-              counterCard={props.counterCard}
-              newCard={props.newCard}
-              removeMoviesFunction={props.removeMoviesFunction}
-              addedNewCard={props.addedNewCard}
-              removeMovie={props.removeMovie}
-            />
-          )}
-        </div>
+          findByNameFilm={props.findByNameFilm}
+        />
+          <div>
+            {props.showError && props.movies.length === 0 ? (
+              <h1 className='saved-movies__err'>{props.showError}</h1>
+            ) : (
+              <MoviesCardList
+                handleMovieLike={props.handleMovieLike}
+                movies={shortMovies}
+                counterCard={props.counterCard}
+                newCard={props.newCard}
+                removeMoviesFunction={props.removeMoviesFunction}
+                addedNewCard={props.addedNewCard}
+                removeMovie={props.removeMovie}
+              />
+            )}
+          </div>     
       </main>
       <Footer />
     </>
   );
-};
+}
 
 export default SavedMovies;

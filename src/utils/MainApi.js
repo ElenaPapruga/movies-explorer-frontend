@@ -1,8 +1,8 @@
 // Содержание описания запросов к нашему Api //
 class MainApi {
-  constructor(config) {
-    this._url = config.url;
-  };
+  constructor({ url }) {
+    this._url = url;
+  }
 
   // Проверка ответа //
   _checkResponse(res) {
@@ -70,9 +70,9 @@ class MainApi {
   };
 
   // Добавление фильма //
-	createMovie = (data) => {
-		const token = localStorage.getItem('jwt');
-		return fetch(`${this._url}/movies`, {
+  createMovie = (data) => {
+    const token = localStorage.getItem("jwt");
+    return fetch(`${this._url}/movies`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -91,9 +91,10 @@ class MainApi {
         movieId: data.movieId,
         nameRU: data.nameRU,
         nameEN: data.nameEN,
-			}),
-		}).then(this._checkResponse);
-	};
+      })
+    })
+      .then(this._checkResponse)
+  };
 
   // Удалить фильм //
   deleteMovie = (movieId) => {
@@ -138,10 +139,10 @@ class MainApi {
 
 // Экземпляр API
 const api = new MainApi({
-  url: "https://api.epapruga.nomoredomains.sbs",
-  headers: {
-    "content-type": "application/json"
-  }
-});
+  url: "https://api.epapruga.nomoredomains.sbs"
+  // headers: {
+  //   "content-type": "application/json"
+  // }
+})
 
 export default api;

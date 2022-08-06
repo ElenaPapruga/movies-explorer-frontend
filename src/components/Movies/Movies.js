@@ -6,42 +6,16 @@ import Footer from "../Footer/Footer";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
 import useLocalStorage from "../../services/useLocalStorage";
-// import Preloader from "../Preloader/Preloader";
-import { useEffect, useState } from "react";
-import { useWindowSize } from '../../services/useWindowSize';
+import { useEffect } from "react";
 
 function Movies(props) {
 
-  const [checked, setChecked] = useLocalStorage("checked", false);
-  const [shortMovies, setShortMovies] = useLocalStorage("short_movies", []);
+  const [checked, setChecked] = useLocalStorage("checked", false); // сеттер фильтрации короткометражки
+  const [shortMovies, setShortMovies] = useLocalStorage("short_movies", []); // фильтрация карточек из поискового стейта
 
-  useEffect(() => {
+  useEffect(() => { // управление фильтрацией карточек на тумблере
     return checked ? setShortMovies(props.showShortMovies(props.movies)) : setShortMovies(props.movies);
   }, [checked, props]);
-
-  ///////////////////////////////////////////////////////
-  // Хук width следит за шириной экрана
-  const { width } = useWindowSize();
-
-  // Количество отображаемых карточек
-  const counterCard =
-    (width >= 1280 && 12) ||  // 12 карточек по 3 в ряд
-    (width >= 768 && width < 1280 && 8) ||  // 8 карточек по 2 в ряд
-    (width >= 320 && width < 768 && 5) //  5 карточек по 1 в ряд
-
-  // Добавление карточек для ряда
-  const numberMoviesAdd =
-    (width >= 1280 && 3) || // Кнопка «Ещё» загружает по 3 карточки.
-    (width >= 768 && width < 1280 && 2) || // Кнопка «Ещё» загружает по 2 карточки.
-    (width >= 320 && width < 768 && 1) // Кнопка «Ещё» загружает 1 карточку.
-
-  // Добавление новых фильмов через кнопку Еще //
-  function addedNewCard() {
-    setNewCard(prevState => prevState + numberMoviesAdd);
-  };
-
-  const [newCard, setNewCard] = useState(numberMoviesAdd);
-  /////////////////////////////////////////////
 
   return (
     <>
@@ -52,24 +26,22 @@ function Movies(props) {
           setValue={props.setValue}
           checked={checked}
           setChecked={setChecked}
-          submitFindByNameFilm={props.submitFindByNameFilm}
+          submitSearchNameFilm={props.submitSearchNameFilm}
           setShowError={props.setShowError}
         />
         <div>
           {props.showError && props.movies.length === 0 ? (
-            <h1 style={{ textAlign: 'center' }}>
-              {props.showError}
-            </h1>
+            <h1 style={{ textAlign: "center" }}>{props.showError}</h1>
           ) : (
             <MoviesCardList
               movies={shortMovies}
-              newCard={newCard}
+              newCard={props.newCard}
               handleMovieLike={props.handleMovieLike}
               changeFilterValue={props.changeFilterValue}
               addedMovie={props.addedMovie}
               removeMovie={props.removeMovie}
-              addedNewCard={addedNewCard}
-              counterCard={counterCard}
+              addedNewCard={props.addedNewCard}
+              counterCard={props.counterCard}
             />
           )}
         </div>

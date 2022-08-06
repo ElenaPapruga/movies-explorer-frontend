@@ -27,12 +27,20 @@ function MoviesCardList(props) {
       <Switch>
         <Route path='/movies'>
           {props.movies?.length > props.counterCard + props.newCard && (
-            <button onClick={() => props.addedNewCard()} className='movies-card-list__button' type='button'>Ещё</button>
+            <button
+              onClick={() => props.addedNewCard()}
+              className='movies-card-list__button'
+              type='button'
+            >Ещё</button>
           )}
         </Route>
         <Route path='/saved-movies'>
           {props.movies?.length > props.counterCard + props.newCard && (
-            <button onClick={() => props.addedNewCard()} className='movies-card-list__button' type='button'>Ещё</button>
+            <button
+              onClick={() => props.addedNewCard()}
+              className='movies-card-list__button'
+              type='button'
+            >Ещё</button>
           )}
         </Route>
       </Switch>
