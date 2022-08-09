@@ -15,43 +15,38 @@ import api from "../../utils/MainApi";
 import { getMovies } from "../../utils/MoviesApi";
 import { useWindowSize } from '../../services/useWindowSize';
 import Preloader from '../Preloader/Preloader';
+import PropTypes from 'prop-types';
 
 function App() {
-  let location = useLocation().pathname;
-  const history = useHistory();
+  console.log("render");
+  const [currentUser, setCurrentUser] = useState({ name: '', email: '' }); // сеттер текущего пользователя //
+  console.log(currentUser);
+  const [isLoading, setIsLoading] = useState(false); // сеттер загрузки //
 
-  const [currentUser, setCurrentUser] = useState({ name: '', email: '' });
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  /////////////////////////////////////////////
-  //стейт для филтрованных фильмов
-  const [moviesAction, setMoviesAction] = useLocalStorage("movies_action", []); // для фильтрации фильмов
-  const [value, setValue] = useLocalStorage("serach_value", "") // для  input по поиску
-  const [valueSave, setValueSave] = useLocalStorage("serach_value_save", "");
+  let location = useLocation().pathname; // путь пользователя //
 
-  // Сеттер хранения фильмов
+  const [loggedIn, setLoggedIn] = useState(false); // сеттер залогиненного юзера //
+
+  // Сеттер хранения фильмов//
   const [movies, setMovies] = useLocalStorage("all_movies", []);
 
+  const [moviesAction, setMoviesAction] = useLocalStorage("movies_action", []); // для фильтрации фильмов //
 
-  // Сохраненные фильмы в локалсторидж
+  // Сохраненные фильмы в локалсторидж //
   const [saveMoviesAction, setSaveMoviesAction] = useLocalStorage(
     "save_movies_action",
     []
   );
 
-  useEffect(() => {
+  const history = useHistory();
+
+  useEffect(() => {  // при регистрации переходим на страницу с фильмами //
     if (loggedIn === true) {
       history.push('/movies');
     }
   }, [loggedIn]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      handleTokenCheck();
-    }, 150);
-  }, [])
-
-  // Проверка токена
+  // Проверка токена //
   function handleTokenCheck() {
     const token = localStorage.getItem('jwt');
     if (token) {
@@ -77,10 +72,16 @@ function App() {
           history.push('/');
           setIsLoading(false);
         })
+      console.log(token);
     }
   };
 
-  // Регистрация
+  useEffect(() => {  // проверка токена после каждого обновления ///
+    console.log("effect");
+    handleTokenCheck();
+  }, []);
+
+  // Регистрация ///
   function handleRegister({ name, email, password }) {
     setIsLoading(true);
     api.createProfile(name, email, password)
@@ -88,7 +89,6 @@ function App() {
         (res) => {
           setIsLoading(false);
           if (res) {
-            console.log(email, password)
             handleLogin({ email, password });
           }
         })
@@ -98,7 +98,7 @@ function App() {
       })
   };
 
-  // Функция входа
+  // Функция входа ///
   function handleLogin({ email, password }) {
     setIsLoading(true);
     api.login(email, password)
@@ -117,12 +117,6 @@ function App() {
       });
   };
 
-  function signOut() {
-    localStorage.clear();
-    setLoggedIn(false);
-    history.push('/')
-  };
-
   // Изменение информации о пользователе
   function handleUpdateUser({ name, email }) {
     localStorage.getItem("jwt");
@@ -130,44 +124,54 @@ function App() {
     api.patchUserInfo(name, email)
       .then(
         (res) => {
+          console.log("updateProfile", res);
           setCurrentUser({ _id: res._id, name: res.name, email: res.email });
           setIsLoading(false);
+          alert(`Данные изменены!`)
         })
-      .catch((err) => {
-        console.log(err);
+      .catch((event) => {
+        console.log(`Ошибка в изменении данных пользователя: ${event}`);
         setIsLoading(false);
       });
   };
-
-  // Функция лайка карточки //
-  function handleMovieLike(movie) {
-    return saveMoviesAction.some((savedMovie) => savedMovie.movieId === movie.movieId);
-  };
+  //////////////////////////////////////////
+  // Хук width следит за шириной экрана
+  const { width } = useWindowSize();
 
   // Ошибка поиска
   const [showError, setShowError] = useState("");
-  ///////////////////////////////////////////////////////
 
-// Хук width следит за шириной экрана
-const { width } = useWindowSize();
+  // Количество отображаемых карточек
+  const counterCard =
+    (width >= 1280 && 12) ||  // 12 карточек по 3 в ряд
+    (width >= 768 && width < 1280 && 8) ||  // 8 карточек по 2 в ряд
+    (width >= 320 && width < 768 && 5); //  5 карточек по 1 в ряд
 
-// Количество отображаемых карточек
-const counterCard =
-  (width >= 1280 && 12) ||  // 12 карточек по 3 в ряд
-  (width >= 768 && width < 1280 && 8) ||  // 8 карточек по 2 в ряд
-  (width >= 320 && width < 768 && 5) //  5 карточек по 1 в ряд
+  // Добавление карточек для ряда
+  const numberMoviesAdd =
+    (width >= 1280 && 3) || // Кнопка «Ещё» загружает по 3 карточки.
+    (width >= 768 && width < 1280 && 2) || // Кнопка «Ещё» загружает по 2 карточки.
+    (width >= 320 && width < 768 && 1); // Кнопка «Ещё» загружает 1 карточку.
 
-// Добавление карточек для ряда
-const numberMoviesAdd =
-  (width >= 1280 && 3) || // Кнопка «Ещё» загружает по 3 карточки.
-  (width >= 768 && width < 1280 && 2) || // Кнопка «Ещё» загружает по 2 карточки.
-  (width >= 320 && width < 768 && 1) // Кнопка «Ещё» загружает 1 карточку.
+  ///??????
+  const [newCard, setNewCard] = useState(numberMoviesAdd); //// колличество новых фильмов - кнопка Еще ///??????
 
-const [newCard, setNewCard] = useState(numberMoviesAdd);
+  const [value, setValue] = useLocalStorage("serach_value", "") // для  input по поиску
+  const [valueSave, setValueSave] = useLocalStorage("serach_value_save", ""); // для  input по поиску
 
-  // Добавление новых фильмов через кнопку Еще //
-  function addedNewCard() {
-    setNewCard(prevState => prevState + numberMoviesAdd);
+  function signOut() { // функция выхода
+    localStorage.removeItem("jwt");
+    // localStorage.clear();
+    localStorage.removeItem("save_movies_action");
+    console.log('save_movies_action')
+    localStorage.removeItem("movies_action");
+    setCurrentUser({ name: '', email: '' });
+    setValueSave('');
+    setValue('');
+    setLoggedIn(false);
+    setMovies([]);
+    setMoviesAction([]);
+    history.push('/');
   };
 
   const showAllMovies = async () => {
@@ -183,8 +187,6 @@ const [newCard, setNewCard] = useState(numberMoviesAdd);
         : "https://upload.wikimedia.org/wikipedia/commons/9/9a/%D0%9D%D0%B5%D1%82_%D1%84%D0%BE%D1%82%D0%BE.png";
       const unadaptedName = data.nameEN ? data.nameEN : data.nameRU;
       const countryText = data.country ? data.country : 'none';
-      // const unadaptedName = !data.nameEN ? data.nameRU : data.nameEN
-      // const countryText = !data.country ? 'none' : data.country;
       return {
         country: countryText,
         director: data.director,
@@ -202,13 +204,21 @@ const [newCard, setNewCard] = useState(numberMoviesAdd);
     setMovies(allMovies);
   }
 
-  // Взятие фильмов пользователя
+  // Взятие фильмов пользователя //
   const takeFilm = async () => {
     const res = await api.getAllMovies();
+    console.log(res)
     setSaveMoviesAction(res)
   }
 
-  // Функция удаления фильма из Сохранненых фильмов
+  // Функция для сохранения фильма для Сохранненые фильмы//
+  const addedMovie = async (movie) => {
+    console.log(movie)
+    await api.createMovie(movie);
+    takeFilm()
+  };
+
+  // Функция удаления фильма из Сохранненых фильмов //
   const removeMovie = async (movie) => {
     console.log(movie)
     const id = saveMoviesAction.find((data) => data.movieId === movie.movieId)._id;
@@ -216,26 +226,24 @@ const [newCard, setNewCard] = useState(numberMoviesAdd);
     takeFilm();
   };
 
-  // Функция для сохранения фильма для Сохранненые фильмы
-  const addedMovie = async (movie) => {
-    console.log(movie)
-    await api.createMovie(movie);
-    takeFilm()
-  };
+  // useEffect(() => {
+  //   takeFilm();
+  // }, [isLoading]);
 
-  useEffect(() => {
-    takeFilm();
-  }, [isLoading]);
-
-  useEffect(() => {
+  useEffect(() => { //
     if (loggedIn) showAllMovies();
     setShowError('');
   }, [loggedIn]);
 
-  // Поиск фильмов, перевод в маленькие буквы
+  // тумблер настройки выборки карточек менее 40 мин = короткометражки//
+  const showShortMovies = (moviesLitle) => {
+    return moviesLitle?.filter((i) => i.duration <= 40);
+  };
+
+  // Поиск фильмов, перевод в маленькие буквы //
   const findByNameFilm = (movies, value) => {
-    const res = movies.filter((data) =>
-      data.nameRU.toLowerCase().includes(value.toLowerCase())
+    const res = movies.filter((i) =>
+      i.nameRU.toLowerCase().includes(value.toLowerCase())
     )
     if (res.length === 0) {
       setShowError("Поиск не дал результатов");
@@ -245,12 +253,11 @@ const [newCard, setNewCard] = useState(numberMoviesAdd);
 
   // search по карточкам в Фмльме
   const submitSearchNameFilm = (value) => {
-    console.log(value)
     showAllMovies();
     setMoviesAction(findByNameFilm(movies, value));
   };
 
-  // search по карточкам в Сохранненые фильмы
+  // search по карточкам в Сохранненые фильмы//
   const submitSearchNameSaveFilm = async (value) => {
     console.log(value)
     const res = await api.getAllMovies();
@@ -258,11 +265,20 @@ const [newCard, setNewCard] = useState(numberMoviesAdd);
     setSaveMoviesAction(findByNameFilm(res, value));
   };
 
-  // тумблер настройки выборки карточек менее 40 мин = короткометражки
-  const showShortMovies = (moviesLitle) => {
-    return moviesLitle?.filter((data) => data.duration <= 40);
+  //колличество новых добавляемых карточек
+  const [newItem, setNewItem] = useState(numberMoviesAdd);  ///??????
+
+  // Добавление новых фильмов через кнопку Еще //
+  function addedNewCard() {
+    setNewCard(newItem + numberMoviesAdd);
+    // setNewCard(prevState => prevState + numberMoviesAdd);
   };
 
+
+  // Функция лайка карточки //
+  function handleMovieLike(movie) {
+    return saveMoviesAction.some((savedMovie) => savedMovie.movieId === movie.movieId);
+  };
 
   return (
     <IngredientsContext.Provider value={currentUser}>
@@ -310,6 +326,7 @@ const [newCard, setNewCard] = useState(numberMoviesAdd);
             counterCard={counterCard}
             movies={moviesAction}
             showShortMovies={showShortMovies}
+            // showAllMovies={showAllMovies}
             addedMovie={addedMovie}
             handleMovieLike={handleMovieLike}
             value={value}
@@ -350,6 +367,15 @@ const [newCard, setNewCard] = useState(numberMoviesAdd);
       </div>
     </IngredientsContext.Provider>
   );
+}
+
+App.propTypes = {
+  data: PropTypes.shape({
+    year: PropTypes.number.isRequired,
+    countryText: PropTypes.string.isRequired,
+    trailerLink: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+  }),
 }
 
 export default App;
